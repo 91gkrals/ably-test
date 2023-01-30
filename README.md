@@ -85,6 +85,7 @@ API 명세서
 
 
 - 비밀번호 재설정
+- 재설정은 앞의 전화번호로 코드를 받아서 인증을 완료한 후에 진행합니다.
   - GET http://localhost:8080/users/resetpassword/01083719899/qwdqwdqw
 
  
