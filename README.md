@@ -72,6 +72,14 @@ API 명세서
   }
 
 
+- 전화번호로 코드 받기
+- GET http://localhost:8080/users/verifycode/01083719899
+
+
+- 받은 코드를 입력하여 인증 완료하기
+- GET http://localhost:8080/users/insertcode/01083719899/{앞서 받은 코드 입력}
+
+
 - 내 정보 보기
   - GET http://localhost:8080/users/myinfo/thetestid/01083719899
 
