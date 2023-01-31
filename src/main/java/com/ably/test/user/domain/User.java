@@ -1,7 +1,6 @@
 package com.ably.test.user.domain;
 import lombok.Data;
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Data
 @Entity(name = "User")

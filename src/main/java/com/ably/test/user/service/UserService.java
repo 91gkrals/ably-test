@@ -1,12 +1,14 @@
 package com.ably.test.user.service;
-import com.ably.test.user.domain.CodeVerification;
 import com.ably.test.user.domain.User;
 import com.ably.test.error.NotFoundException;
 import com.ably.test.user.dao.UserRepository;
+import com.ably.test.user.domain.Verificationhistory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -31,10 +33,11 @@ public class UserService {
     public User signup(User user) {
         checkNotNull(user);
 
-        CodeVerification codeinfo = userRepository.selectIsVerified(user.getTelNum());
+        Object codeinfo = userRepository.selectIsVerified(user.getTelNum());
 
-        if (codeinfo == null || codeinfo.isVerified() == false) {
-            throw new IllegalArgumentException("휴대폰 번호 인증을 해 주시기 바랍니다.");
+
+        if (codeinfo == null || Boolean.parseBoolean(codeinfo.toString()) == false) {
+            throw new NotFoundException("휴대폰 번호 인증을 해 주시기 바랍니다.");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -52,9 +55,9 @@ public class UserService {
             throw new NotFoundException("정보를 찾을 수 없습니다.");
         }
 
-        CodeVerification codeinfo = userRepository.selectIsVerified(phoneNumber);
+        Object codeinfo = userRepository.selectIsVerified(phoneNumber);
 
-        if (codeinfo == null || codeinfo.isVerified() == false) {
+        if (codeinfo == null || Boolean.parseBoolean(codeinfo.toString()) == false) {
             throw new IllegalArgumentException("휴대폰 번호 인증을 해 주시기 바랍니다.");
         }
 
@@ -86,7 +89,7 @@ public class UserService {
 
         String code = getRandomCode();
 
-        userRepository.insertPhoneNumberAndCode(phoneNumber, code);
+        userRepository.insertPhoneNumberAndCode(phoneNumber, code, false);
 
         return code;
     }
@@ -106,13 +109,13 @@ public class UserService {
 
         String result = "fail";
 
-        CodeVerification codeinfo = userRepository.selectCode(phoneNumber);
+        Object codeinfo = userRepository.selectCode(phoneNumber);
 
         if (codeinfo == null) {
             throw new NotFoundException("Code not found.");
         }
 
-        if (codeinfo.getCode().equals(code)) {
+        if (codeinfo.toString().equals(code)) {
             userRepository.updateVerification(phoneNumber);
             result = "success";
         }
@@ -127,9 +130,9 @@ public class UserService {
 
         String result = "fail";
 
-        CodeVerification codeinfo = userRepository.selectIsVerified(phoneNumber);
+        Object codeinfo = userRepository.selectIsVerified(phoneNumber);
 
-        if (codeinfo == null || codeinfo.isVerified() == false) {
+        if (codeinfo == null || Boolean.parseBoolean(codeinfo.toString()) == false) {
             throw new IllegalArgumentException("휴대폰 번호 인증을 해 주시기 바랍니다.");
         }
 
