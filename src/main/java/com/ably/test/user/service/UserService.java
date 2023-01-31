@@ -29,6 +29,13 @@ public class UserService {
     @Transactional
     public User signup(User user) {
         checkNotNull(user);
+
+        boolean isVerified = userRepository.selectIsVerified(user.getTelNum());
+
+        if (isVerified == false) {
+            throw new IllegalArgumentException("휴대폰 번호 인증을 해 주시기 바랍니다.");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -47,7 +54,7 @@ public class UserService {
         boolean isVerified = userRepository.selectIsVerified(phoneNumber);
 
         if (isVerified == false) {
-            throw new IllegalArgumentException("It is not verified.");
+            throw new IllegalArgumentException("휴대폰 번호 인증을 해 주시기 바랍니다.");
         }
 
         return user;
@@ -122,7 +129,7 @@ public class UserService {
         boolean isVerified = userRepository.selectIsVerified(phoneNumber);
 
         if (isVerified == false) {
-            throw new IllegalArgumentException("It is not verified.");
+            throw new IllegalArgumentException("휴대폰 번호 인증을 해 주시기 바랍니다.");
         }
 
         User user = userRepository.findByPhoneNumber(phoneNumber);
