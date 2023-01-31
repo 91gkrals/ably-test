@@ -1,7 +1,9 @@
 package com.ably.test.user.service;
+import com.ably.test.user.domain.CodeVerification;
 import com.ably.test.user.domain.User;
 import com.ably.test.error.NotFoundException;
 import com.ably.test.user.dao.UserRepository;
+import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,10 +31,10 @@ public class UserService {
     @Transactional
     public User signup(User user) {
         checkNotNull(user);
+        //handle null from query result
+        CodeVerification codeinfo = userRepository.selectIsVerified(user.getTelNum());
 
-        boolean isVerified = userRepository.selectIsVerified(user.getTelNum());
-
-        if (isVerified == false) {
+        if (codeinfo == null || codeinfo.isVerified() == false) {
             throw new IllegalArgumentException("휴대폰 번호 인증을 해 주시기 바랍니다.");
         }
 
@@ -51,9 +53,9 @@ public class UserService {
             throw new NotFoundException("User not found.");
         }
 
-        boolean isVerified = userRepository.selectIsVerified(phoneNumber);
+        CodeVerification codeinfo = userRepository.selectIsVerified(phoneNumber);
 
-        if (isVerified == false) {
+        if (codeinfo == null || codeinfo.isVerified() == false) {
             throw new IllegalArgumentException("휴대폰 번호 인증을 해 주시기 바랍니다.");
         }
 
@@ -105,7 +107,7 @@ public class UserService {
 
         String result = "fail";
 
-        String codeSearched = userRepository.selectCode(phoneNumber);
+        CodeVerification codeSearched = userRepository.selectCode(phoneNumber);
 
         if (codeSearched == null) {
             throw new NotFoundException("Code not found.");
@@ -126,9 +128,9 @@ public class UserService {
 
         String result = "fail";
 
-        boolean isVerified = userRepository.selectIsVerified(phoneNumber);
+        CodeVerification codeinfo = userRepository.selectIsVerified(phoneNumber);
 
-        if (isVerified == false) {
+        if (codeinfo == null || codeinfo.isVerified() == false) {
             throw new IllegalArgumentException("휴대폰 번호 인증을 해 주시기 바랍니다.");
         }
 
