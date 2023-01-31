@@ -49,17 +49,7 @@ API 명세서
   - POST 요청 시에는 Body 탭에서 JSON 형식으로 데이터를 입력해야 합니다.
 
   
-- 회원가입
-  - POST http://localhost:8080/users/add
 
-  예시 JSON
-  {
-  "loginId": "thetestid",
-  "password": "qwqowidjqwo",
-  "realName": "홍길동",
-  "telNum": "01083719899",
-  "email": "qowidjqwoijd@naver.com"
-  }
 
 
 - 로그인
@@ -79,6 +69,19 @@ API 명세서
 - 받은 코드를 입력하여 인증 완료하기
   - GET http://localhost:8080/users/insertcode/01083719899/{앞서 받은 코드 입력}
 
+
+- 회원가입
+  - 앞의 전화번호로 코드를 받아서 인증을 완료한 후에 진행합니다.
+    - POST http://localhost:8080/users/add
+
+    예시 JSON
+    {
+    "loginId": "thetestid",
+    "password": "qwqowidjqwo",
+    "realName": "홍길동",
+    "telNum": "01083719899",
+    "email": "qowidjqwoijd@naver.com"
+    }
 
 - 내 정보 보기
   - GET http://localhost:8080/users/myinfo/thetestid/01083719899
