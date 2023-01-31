@@ -3,7 +3,6 @@ import com.ably.test.user.domain.CodeVerification;
 import com.ably.test.user.domain.User;
 import com.ably.test.error.NotFoundException;
 import com.ably.test.user.dao.UserRepository;
-import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class UserService {
     @Transactional
     public User signup(User user) {
         checkNotNull(user);
-        //handle null from query result
+
         CodeVerification codeinfo = userRepository.selectIsVerified(user.getTelNum());
 
         if (codeinfo == null || codeinfo.isVerified() == false) {
@@ -50,7 +49,7 @@ public class UserService {
         User user = userRepository.findByLoginId(loginId);
 
         if (user == null) {
-            throw new NotFoundException("User not found.");
+            throw new NotFoundException("정보를 찾을 수 없습니다.");
         }
 
         CodeVerification codeinfo = userRepository.selectIsVerified(phoneNumber);
@@ -70,11 +69,11 @@ public class UserService {
         User user = userRepository.findByLoginId(loginId);
 
         if (user == null) {
-            throw new NotFoundException("User not found.");
+            throw new NotFoundException("정보를 찾을 수 없습니다.");
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("Password is not correct.");
+            throw new IllegalArgumentException("패스워드가 올바르지 않습니다.");
         }
 
 
@@ -137,7 +136,7 @@ public class UserService {
         User user = userRepository.findByPhoneNumber(phoneNumber);
 
         if (user == null) {
-            throw new NotFoundException("User not found.");
+            throw new NotFoundException("정보를 찾을 수 없습니다.");
         }
 
         user.setPassword(passwordEncoder.encode(password));
