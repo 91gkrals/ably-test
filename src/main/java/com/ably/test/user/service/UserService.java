@@ -106,13 +106,13 @@ public class UserService {
 
         String result = "fail";
 
-        CodeVerification codeSearched = userRepository.selectCode(phoneNumber);
+        CodeVerification codeinfo = userRepository.selectCode(phoneNumber);
 
-        if (codeSearched == null) {
+        if (codeinfo == null) {
             throw new NotFoundException("Code not found.");
         }
 
-        if (codeSearched.equals(code)) {
+        if (codeinfo.getCode().equals(code)) {
             userRepository.updateVerification(phoneNumber);
             result = "success";
         }
